@@ -1,33 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { View,Text,StyleSheet, Button } from 'react-native'
+import { Text, View } from 'react-native'
 import * as api from '../APIs/apiCalls'
+import { WebView } from 'react-native-webview';
+import ActivityLoader from '../Components/ActivityLoader';
 
-const AnimePlayer=({navigation})=>{
-    
-    const [animeData,setAnimeData]=useState()
+const AnimePlayer=({route})=>{
 
-    // useEffect(()=>{
-    //     api.getAnimeDataGet("recentRelease").then(res=>{
-    //         setAnimeData(res)
-    //     })
-    // },[])
+    const [link,setLink]=useState()
+    useEffect(()=>{
+        api.getAnimeDataPost({episodeLink:route.params.episodeLink},"webPlayEpisode").then(res=>{
+            console.log(res.episodeUrl)
+            setLink(res)
+        })
+    },[])
 
     return (
-        <View>
-            <Text>AnimePlayer Screen</Text>
-            <Button title="Home" onPress={()=>navigation.navigate("Home")}/>
-        </View>
+        <>
+            {link?<WebView source={{ uri: link.episodeUrl}} />:
+            <ActivityLoader/>}
+        </>
     )
 }
-
-const styles=StyleSheet.create({
-    backgroundVideo: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-      },
-})
 
 export default AnimePlayer

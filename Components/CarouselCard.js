@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,Text,ImageBackground,StyleSheet, Dimensions } from 'react-native';
+import { View,Text,ImageBackground,StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import ThemePalette from '../Theme/ThemePalette';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -7,6 +7,7 @@ const dimension=Dimensions.get("window")
 
 const CarouselCard=({title,banner,detail,animeLink,navigation})=>{
     return(
+        <TouchableOpacity onPress={()=>navigation.navigate("AnimePlayer",{episodeLink:animeLink})} activeOpacity={1}>
         <View style={{alignItems:"center"}}>
             <ImageBackground source={{uri:banner}} style={styles.carouselCard} imageStyle={{ borderRadius: 15}}>
                 <LinearGradient style={styles.bottomGradient} colors={['transparent','transparent','black']}>
@@ -15,6 +16,7 @@ const CarouselCard=({title,banner,detail,animeLink,navigation})=>{
                 </LinearGradient>
             </ImageBackground>
         </View>
+        </TouchableOpacity>
     )
 }
 

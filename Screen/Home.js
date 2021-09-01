@@ -104,7 +104,6 @@ const styles=StyleSheet.create({
         alignItems:'center',
         backgroundColor:ThemePalette["light"]["background"],
         height:dimension.height,
-        height:dimension.height
     },
     titleColorOrange:{
         color:ThemePalette["light"]["titleColor"]["orange"]

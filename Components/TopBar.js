@@ -25,9 +25,10 @@ const styles=StyleSheet.create({
         display:'flex',
         flexDirection:'row',
         justifyContent:"space-between",
-        width:dimension.width-5,
+        width:dimension.width,
         padding:20,
-        paddingRight:25
+        paddingRight:25,
+        backgroundColor:ThemePalette["light"].background,
     },
     title:{
         fontSize:18,

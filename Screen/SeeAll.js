@@ -26,7 +26,6 @@ const styles=StyleSheet.create({
     container:{
         backgroundColor:ThemePalette["light"]["background"],
         height:dimension.height,
-        height:dimension.height,
         marginLeft:5
     },
 })

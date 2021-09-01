@@ -6,9 +6,9 @@ import ThemePalette,{selectedTheme} from '../Theme/ThemePalette'
 
 const dimension=Dimensions.get("window")
 
-const EpisodeBtn=({uniqueKey,episodeLink})=>{
+const EpisodeBtn=({uniqueKey,episodeLink,navigation})=>{
     return(
-        <TouchableOpacity key={uniqueKey}>
+        <TouchableOpacity key={uniqueKey} onPress={()=>navigation.navigate("AnimePlayer",{episodeLink})}>
             <Text style={styles.epBtn}>{uniqueKey+1}</Text>
         </TouchableOpacity>
     )
@@ -47,7 +47,7 @@ const AnimeDetail=({route,navigation})=>{
                 <FlatList 
                     data={animeData.episodes}
                     renderItem={({item,index})=>
-                        <EpisodeBtn uniqueKey={index} episodeLink={item}/>
+                        <EpisodeBtn uniqueKey={index} episodeLink={item} navigation={navigation}/>
                     }
                     keyExtractor={(item,index)=>index}
                     horizontal={true}
