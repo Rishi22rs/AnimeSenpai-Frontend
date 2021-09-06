@@ -1,18 +1,21 @@
 import React, { useEffect, useState,useRef } from 'react'
 import { View,Text,StyleSheet, ScrollView, SafeAreaView, Dimensions,ActivityIndicator, FlatList } from 'react-native'
 import * as api from '../APIs/apiCalls'
-import ThemePalette from '../Theme/ThemePalette';
+import {ThemePalette,  selectedTheme } from '../Theme/ThemePalette';
 import Carousel from 'react-native-snap-carousel';
 import CarouselCard from '../Components/CarouselCard';
 import AnimeCard from '../Components/AnimeCard';
 import TopBar from '../Components/TopBar';
 import ActivityLoader from '../Components/ActivityLoader'
+import { useTheme } from '@react-navigation/native';
 
 
 const dimension=Dimensions.get("window")
 
 const Home=({navigation})=>{
     
+    const { colors } = useTheme();
+
     const [animeData,setAnimeData]=useState()
     const [newSeason,setNewSeason]=useState()
     const [movies,setMovies]=useState()
@@ -42,10 +45,10 @@ const Home=({navigation})=>{
     },[])
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container,{backgroundColor:colors.background}]}>
             <TopBar/>
             <ScrollView>
-            {animeData&&<Text onPress={()=>navigation.navigate("SeeAll",{data:animeData})} style={styles.seeAll}>See all</Text>}
+            {animeData&&<Text onPress={()=>navigation.navigate("SeeAll",{data:animeData,episodeLink:true})} style={[styles.seeAll,{color:colors["titleColor"]["orange"]}]}>See all</Text>}
                 <Carousel
                     loop={true}
                     ref={carouselRef}
@@ -58,8 +61,8 @@ const Home=({navigation})=>{
                 />                
                 <View>
                     {popular&&<View style={styles.sectionTitleContainer}>
-                        <Text style={styles.sectionTitle}>Popular</Text>
-                        <Text onPress={()=>navigation.navigate("SeeAll",{data:popular,title:"Popular"})} style={[styles.seeAll,{marginTop:2}]}>See all</Text>
+                        <Text style={[styles.sectionTitle,{color:colors["animeCard"]["title"]}]}>Popular</Text>
+                        <Text onPress={()=>navigation.navigate("SeeAll",{data:popular,title:"Popular",episodeLink:false})} style={[styles.seeAll,{marginTop:2,color:colors["titleColor"]["orange"]}]}>See all</Text>
                     </View>}
                     <FlatList
                         data={popular}
@@ -70,8 +73,8 @@ const Home=({navigation})=>{
                 </View>
                 <View>
                     {newSeason&&<View style={styles.sectionTitleContainer}>
-                        <Text style={styles.sectionTitle}>New Season</Text>
-                        <Text onPress={()=>navigation.navigate("SeeAll",{data:newSeason,title:"New Season"})} style={[styles.seeAll,{marginTop:2}]}>See all</Text>
+                        <Text style={[styles.sectionTitle,{color:colors["animeCard"]["title"], }]}>New Season</Text>
+                        <Text onPress={()=>navigation.navigate("SeeAll",{data:newSeason,title:"New Season",episodeLink:false})} style={[styles.seeAll,{marginTop:2,color:colors["titleColor"]["orange"]}]}>See all</Text>
                     </View>}
                     <FlatList
                         data={newSeason}
@@ -82,8 +85,8 @@ const Home=({navigation})=>{
                 </View>
                 <View>
                     {movies&&<View style={styles.sectionTitleContainer}>
-                        <Text style={styles.sectionTitle}>Movies</Text>
-                        <Text onPress={()=>navigation.navigate("SeeAll",{data:movies,title:"Movies"})} style={[styles.seeAll,{marginTop:2}]}>See all</Text>
+                        <Text style={[styles.sectionTitle,{color:colors["animeCard"]["title"]}]}>Movies</Text>
+                        <Text onPress={()=>navigation.navigate("SeeAll",{data:movies,title:"Movies",episodeLink:false})} style={[styles.seeAll,{marginTop:2,color:colors["titleColor"]["orange"]}]}>See all</Text>
                     </View>}
                     <FlatList
                         data={movies}
@@ -102,27 +105,15 @@ const Home=({navigation})=>{
 const styles=StyleSheet.create({
     container:{
         alignItems:'center',
-        backgroundColor:ThemePalette["light"]["background"],
         height:dimension.height,
-    },
-    titleColorOrange:{
-        color:ThemePalette["light"]["titleColor"]["orange"]
-    },
-    titleColorGrey:{
-        color:ThemePalette["light"]["titleColor"]["grey"]
-    },
-    carouselTitle:{
-        color:ThemePalette["light"]["carouselCardText"]["title"]
     },
     seeAll:{
         textAlign: 'right', 
         alignSelf: 'stretch',
         paddingRight:40,
         marginBottom:10,
-        color:ThemePalette["light"]["titleColor"]["orange"]
     },
     sectionTitle:{
-        color:ThemePalette["light"]["animeCard"]["title"], 
         fontSize:18,
         fontWeight:"800",
     },

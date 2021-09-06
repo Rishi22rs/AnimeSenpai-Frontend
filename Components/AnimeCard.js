@@ -1,26 +1,29 @@
-import React from 'react';
+import { useTheme } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { View,Text,Image,StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import ThemePalette from '../Theme/ThemePalette';
+import {getData, selectedTheme, ThemePalette } from '../Theme/ThemePalette';
 
 const dimension=Dimensions.get("window")
 
-const AnimeCard=({title,banner,detail,animeLink,navigation})=>{
+const AnimeCard=({title,banner,detail,animeLink,navigation,episodeLink})=>{
+
+    const { colors } = useTheme();
+
     return(
-        <TouchableOpacity activeOpacity={0.5} style={styles.container} onPress={()=>navigation.navigate("AnimeDetail",{animeLink})}>
+        <TouchableOpacity activeOpacity={0.5} style={styles.container} onPress={()=>episodeLink?navigation.navigate("AnimePlayer",{episodeLink:animeLink}):navigation.navigate("AnimeDetail",{animeLink})}>
             <Image source={{uri:banner}} style={styles.cardImg}/>
-            <Text numberOfLines={2} style={styles.animeTitle}>{title}</Text>
-            <Text style={styles.subText}>{detail}</Text>
+            <Text numberOfLines={2} style={[styles.animeTitle,{color:colors["animeCard"]["title"]}]}>{title}</Text>
+            <Text style={[styles.subText,{color:colors["animeCard"]["subText"]}]}>{detail}</Text>
         </TouchableOpacity>
     )
 }
 
 const styles=StyleSheet.create({
-    animeTitle:{
-        color:ThemePalette["light"]["animeCard"]["title"], 
+    animeTitle:{ 
         fontSize:18,
         fontWeight:"700",
         width:dimension.width/2.5,
-        marginTop:5
+        marginTop:5,
     },
     container:{
         padding:0,
@@ -36,7 +39,6 @@ const styles=StyleSheet.create({
         marginBottom:10,
     },
     subText:{
-        color:ThemePalette["light"]["animeCard"]["subText"],
         fontWeight:"600",
         marginLeft:2,
         width:dimension.width/2.5,

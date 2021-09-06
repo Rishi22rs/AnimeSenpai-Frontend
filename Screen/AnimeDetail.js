@@ -1,20 +1,24 @@
+import { useTheme } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
 import { View,Image,Text,StyleSheet, ScrollView, Dimensions, TouchableOpacity, ImageBackground, FlatList } from 'react-native'
 import * as api from '../APIs/apiCalls'
 import ActivityLoader from '../Components/ActivityLoader'
-import ThemePalette,{selectedTheme} from '../Theme/ThemePalette'
+import TopBar from '../Components/TopBar'
+import { Icon } from 'react-native-elements'
 
 const dimension=Dimensions.get("window")
 
-const EpisodeBtn=({uniqueKey,episodeLink,navigation})=>{
+const EpisodeBtn=({uniqueKey,episodeLink,navigation,colors})=>{
     return(
         <TouchableOpacity key={uniqueKey} onPress={()=>navigation.navigate("AnimePlayer",{episodeLink})}>
-            <Text style={styles.epBtn}>{uniqueKey+1}</Text>
+            <Text style={[styles.epBtn,{ backgroundColor:colors.epBtn.background,
+        color:colors.epBtn.color,}]}>{uniqueKey+1}</Text>
         </TouchableOpacity>
     )
 }
 
 const AnimeDetail=({route,navigation})=>{
+    const {colors}=useTheme()
 
     const [animeData,setAnimeData]=useState()
 
@@ -29,32 +33,41 @@ const AnimeDetail=({route,navigation})=>{
         <View>
             {animeData?<>  
             <ImageBackground source={{uri:animeData.banner}} style={styles.banner}>
+                <TouchableOpacity activeOpacity={1} style={{zIndex:99}} onPress={() => navigation.goBack()}>
+                    <Icon
+                        raised={colors.carouselCardText.title==='white'?true:false}
+                        reverse={colors.carouselCardText.title==='white'?false:true}
+                        name='arrow-back'
+                        type='material'
+                        color={"black"}
+                    />
+                </TouchableOpacity>
             </ImageBackground>
             <ScrollView style={styles.container}>
                 <View style={{height:380}}></View>
-                <View style={styles.detail}>
-                <Text style={styles.title}>{animeData.name}</Text>
-                <Text style={styles.subTitle}>{animeData.Type}</Text>
-                <Text style={{marginBottom:15}}>{animeData["Other name"]}</Text>
+                <View style={[styles.detail,{backgroundColor:colors.background,}]}>
+                <Text style={[styles.title,{color:colors.animeCard['title'],}]}>{animeData.name}</Text>
+                <Text style={[styles.subTitle,{color:colors.animeCard['title'],}]}>{animeData.Type}</Text>
+                <Text style={{marginBottom:15,color:colors.animedetail.detail}}>{animeData["Other name"]}</Text>
                 <View style={styles.genreContainer}>
-                {animeData.Genre.map((x,key)=><Text style={styles.genre} key={key}>{x}</Text>)}
+                {animeData.Genre.map((x,key)=><TouchableOpacity onPress={()=>navigation.navigate("GenreAnimeList",{genre:x.trim()})}><Text style={[styles.genre,{backgroundColor:colors.genreBackgroundInDetail,color:colors.genreTextColor}]} key={key}>{x.trim()}</Text></TouchableOpacity>)}
                 </View>
                 <View style={styles.epContainer}>
                 <View style={{display:'flex',justifyContent:'space-between',width:dimension.width-50}}>
-                    <Text style={{fontWeight:"700",color:ThemePalette[selectedTheme].animeCard['title']}}>Episodes</Text>
-                    <Text style={[styles.seeAll]} onPress={()=>navigation.navigate("SeeAllEp",{eps:animeData.episodes})}>See all</Text>
+                    <Text style={{fontWeight:"700",color:colors.animeCard['title']}}>Episodes</Text>
+                    <Text style={[styles.seeAll,{color:colors["titleColor"]["orange"],color:colors["titleColor"]["orange"],}]} onPress={()=>navigation.navigate("SeeAllEp",{eps:animeData.episodes})}>See all</Text>
                 </View>
                 <FlatList 
-                    data={animeData.episodes}
+                    data={animeData.episodes.reverse()}
                     renderItem={({item,index})=>
-                        <EpisodeBtn uniqueKey={index} episodeLink={item} navigation={navigation}/>
+                        <EpisodeBtn colors={colors} uniqueKey={index} episodeLink={item} navigation={navigation}/>
                     }
                     keyExtractor={(item,index)=>index}
                     horizontal={true}
                 />
                 </View>
-                <Text style={styles.summaryText}>{animeData["Plot Summary"]}</Text></View>
-            </ScrollView></>:<View style={{marginTop:20}}><ActivityLoader/></View>}
+                <Text style={[styles.summaryText,{color:colors.animedetail.detail,}]}>{animeData["Plot Summary"]}</Text></View>
+            </ScrollView></>:<><TopBar/><View style={{backgroundColor:colors.background,height:dimension.height}}><ActivityLoader/></View></>}
         </View>
     )
 }
@@ -70,7 +83,6 @@ const styles=StyleSheet.create({
         bottom:0
     },
     detail:{
-        backgroundColor:ThemePalette["light"].background,
         padding:20,
         borderRadius:30,
         alignItems:'center',
@@ -82,11 +94,9 @@ const styles=StyleSheet.create({
     title:{
         fontSize:22,
         fontWeight:"900",
-        color:ThemePalette[selectedTheme].animeCard['title'],
         marginBottom:5
     },
     subTitle:{
-        color:ThemePalette[selectedTheme].animeCard['title'],
         fontSize:15,
         marginBottom:10
     },
@@ -99,14 +109,11 @@ const styles=StyleSheet.create({
         marginBottom:10
     },
     genre:{
-        backgroundColor:ThemePalette[selectedTheme].genreBackgroundInDetail,
         padding:5,
         borderRadius:15,
         margin:3,
     },
     epBtn:{
-        backgroundColor:ThemePalette[selectedTheme].epBtn.background,
-        color:ThemePalette[selectedTheme].epBtn.color,
         margin:10,
         padding:10,
         borderRadius:15,
@@ -115,12 +122,10 @@ const styles=StyleSheet.create({
         textAlign:'center'
     },
     summaryText:{
-        color:ThemePalette[selectedTheme].animeCard['title'],
         fontSize:15
     },
     seeAll:{
         textAlign: 'right', 
-        color:ThemePalette["light"]["titleColor"]["orange"],
         marginTop:-17
     },
 })

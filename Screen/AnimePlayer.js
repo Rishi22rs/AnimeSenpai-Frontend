@@ -9,7 +9,6 @@ const AnimePlayer=({route})=>{
     const [link,setLink]=useState()
     useEffect(()=>{
         api.getAnimeDataPost({episodeLink:route.params.episodeLink},"webPlayEpisode").then(res=>{
-            console.log(res.episodeUrl)
             setLink(res)
         })
     },[])
